@@ -19,8 +19,14 @@ export const addBook = async (req, res) => {
 }
 
 export const getAllBooks = async (req, res) => {
+    const {title, author} = req.query;
+    let search = {};
+    if(title) 
+        search = { title: { $regex: title } }
+    if(author) 
+        search = { author: { $regex: author } }
     try {
-        const books = await bookModel.find();
+        const books = await bookModel.find(search);
         res.status(200).json({ length: books.length, books })
     } catch (error) {
         res.status(400).json({ msg: "can't find books", error })

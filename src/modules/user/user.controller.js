@@ -21,8 +21,14 @@ export const addAuthor = async (req, res) => {
 }
 
 export const getAuthors = async (req, res) => {
+    const {name, bio} = req.query;
+    let search = {};
+    if(name) 
+        search = { name: { $regex: name } }
+    if(bio) 
+        search = { bio: { $regex: bio } }
     try {
-        const authors = await authorModel.find();
+        const authors = await authorModel.find(search);
         res.status(201).json({length: authors.length, authors})
     } catch (error) {
         res.status(400).json({msg: "can't find authors", error})
